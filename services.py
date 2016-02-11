@@ -1,3 +1,4 @@
+#-*- coding:utf-8 -*-
 import requests
 import xmltodict
 
@@ -49,17 +50,22 @@ def ask_api(action, **kw):
 
 	# now compile urls using settings
 	url = action['url'].format(**context)
+	# import pdb
+	# pdb.set_trace()
 	headers = {'Content-Type': 'application/xml'}
+
+	kw['api_key'] = settings.INVOICE_EXPRESS_API_KEY
 
 	#TODO: use one session for many requests
 	s = Session()
-	
 	req = Request( action['method'],
+		url = url,
 	    headers=headers,
-	    data=xmltodict.unparse(**kw),
+	    data=xmltodict.unparse(kw),
 	)
+	prepared = req.prepare()
 	# TODO: connection error handling
-	resp = s.send(req)
+	resp = s.send(prepared)
 
 	if resp.status_code == 200:
 		return xmltodict.parse(resp.text)
