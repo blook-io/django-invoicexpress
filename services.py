@@ -9,9 +9,7 @@ from . import api
 
 ### CONFIG ###
 
-# temporarily this will be here, not in actual settings
-settings.INVOICE_EXPRESS_ACCOUNT_NAME = 'blookpt'
-settings.INVOICE_EXPRESS_API_KEY = 'b761e9c48d58d5ccd2950a4aa22f3ac5876fc6b0'
+
 
 
 
