@@ -10,17 +10,21 @@ Installation
 
 Options
 -----------------
-INVOICE_EXPRESS_ACCOUNT_NAME :
+settings.INVOICE_EXPRESS_ACCOUNT_NAME :
 	Account name from invoicexpress.com
 
-INVOICE_EXPRESS_API_KEY :
+settings.INVOICE_EXPRESS_API_KEY :
 	API key from invoicexpress.com
+
+
+How to make calls? By specifying all needed parameters (except API_KEY, which is in settings);
 
 Using
 -----------------
 
-Launch demo in terminal 
-./manage.py shell < django_invoicexpress/demo.py
+export DJANGO_SETTINGS_MODULE='your_project.settings'
+
+python -m django_invoicexpress.test
 
 Notes
 ---------------------
