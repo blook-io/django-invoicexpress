@@ -50,24 +50,39 @@ class ClientsApi(unittest.TestCase):
 			# print "ID: {id}, Name: {name}, Code: {code}".format(**u)
 
 
+class InvoiceReceiptsApi(unittest.TestCase):
+	def test_crud(self):
+		result = ask_api('invoice-receipts.create', { 
+				'date': '01/01/2014',
+				'due_date': '01/02/2014',
+				'client' : {
+					'name' : 'Ricardo Pereira',
+					'code' : 100,
+				},
+				'items type="array" ' : {
+					'item' : [
+						{	
+							'name' : 'Product 1',
+							'description' : "Cleaning product",
+							'unit_price': 12.0,
+							'quantity' : 2.0,
+						},
+						{	
+							'name' : 'Product 2',
+							'description' : "Beauty product",
+							'unit_price': 123.0,
+							'quantity' : 1.0,
+						},
 
-# print """
-# -----------------------
-# Updating first user
-# -----------------------
-# """
-
-# print """
-# -------------------------
-# Getting one (first) user
-# -------------------------
-# """
-
-
-
-# # print "Updating user"
-# # print "Removing user"
-
+					],
+					
+				}
+		})
+		print result
+		
 
 if __name__ == '__main__':
-    unittest.main()
+
+	suite = unittest.TestLoader().loadTestsFromTestCase(InvoiceReceiptsApi)
+	unittest.TextTestRunner(verbosity=2).run(suite)
+    # unittest.main()
