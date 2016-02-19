@@ -1,32 +1,23 @@
 # django-invoicexpress
 Django-invocexpress -  Python implementation of Invocexpress (https://invoicexpress.com) API
 
-Installation
-=================
+Using in Django Projects
+------------------------
+1. Clone to folder with name `invoicexpress`
+	
+	git clone https://github.com/blook-io/django-invoicexpress.git invoicexpress
 
-1. Go to blook project root ( :) )
-2. git clone ssh://git@github.com:blook-io/django_invoicexpress.git
-3. pip install -r django_invoicexpress/requirements.txt 
+2. in settings.py
 
-Options
------------------
-settings.INVOICE_EXPRESS_ACCOUNT_NAME :
-	Account name from invoicexpress.com
+	INVOICE_EXPRESS_ACCOUNT_NAME = 'your_account_name'
+	
+	INVOICE_EXPRESS_API_KEY  = 'your_api_key'
 
-settings.INVOICE_EXPRESS_API_KEY :
-	API key from invoicexpress.com
+Running Tests
+------------------
+
+1. export DJANGO_MODULE_SETTINGS='your.app.settings'
+2. python -m invoicexpress.test
 
 
-How to make calls? By specifying all needed parameters (except API_KEY, which is in settings);
 
-Using
------------------
-
-export DJANGO_SETTINGS_MODULE='your_project.settings'
-
-python -m django_invoicexpress.test
-
-Notes
----------------------
-
-- potentially  Module can be used for any python framwork (with minor changes for other frameworks)  
