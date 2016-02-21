@@ -6,6 +6,7 @@ import xmltodict
 
 from django.conf import settings
 from requests import Request, Session
+from xml.parsers.expat import ExpatError
 
 
 
@@ -35,15 +36,61 @@ context = {
 	'account_name': settings.INVOICE_EXPRESS_ACCOUNT_NAME,
 }
 
+def get_keys(keys_list, obj):
+	"""
+		Returns obj with keys_list 
+		And obj with all other keys (if any)
+	"""
+
+	new_obj = {}
+	for key in keys_list:
+		if key in obj:
+			new_obj[key] = obj[key]
+			del obj[key]
+
+	return new_obj,obj
+
+def tune_dict(method, xml_params):
+	"""
+		Changes dict to conform Invoicexpress API 
+	"""
+	# import pdb
+	# pdb.set_trace()
+	if method == 'invoice-receipts.create' or method == 'invoice-receipts.update':
+		if 'items' in xml_params:
+			xml_params['items'] = { 'item': xml_params['items'] }
+
+	return xml_params
+
+def tune_xml(method, xml_string):
+	"""
+		Changes xml string to conform Invocexpress API requisites
+	"""
+	if method == 'invoice-receipts.create' or method == 'invoice-receipts.update':
+		xml_string = xml_string.replace('<items>','<items type="array">')
+	return xml_string
+
+def tune_out(method, out_dict):
+	""" 
+		Simplifies dict: 
+		  res['items'][0]
+		intead of:
+		  res['items']['item'][0]
+	"""
+	if method == 'invoice-receipts.get':
+		if 'items' in out_dict:
+			out_dict['items'] = out_dict['items']['item']
+
+	return out_dict
 
 
-def ask_api(method, xml_params={}, url_params={}):
+def ask_api(method, xml_params={}):
 	""" this function will do all  requests 
 		to Invocexpress API
 
 	:param action: 			api call name (e.g. users.accouts , invoices.get)
 	:param xml_params: 	params, that should specified in xml body long list of additional arguments;
-	:param url_params: 	params, that is part of url;
+	
 
 	:returns:		API answer as python dict 
 	"""
@@ -51,19 +98,23 @@ def ask_api(method, xml_params={}, url_params={}):
 	action = api.method[method]
 
 	# find all params in brackets
-	keys_in_url = re.findall('\{(.[^\}]+)\}',action['url'])
+	url_part  = action['url'].split('?')
+	keys_in_url = re.findall('\{(.[^\}]+)\}',url_part[0])
+	if len(url_part) > 1:
+		keys_in_params = re.findall('\{(.[^\}]+)\}',url_part[1])
+	else:
+		keys_in_params = {}
 
-	addr_params = {}
-	for key in keys_in_url:
-		if key in url_params:
-			addr_params[key] = url_params[key]
-			del url_params[key]
-
+	# sort parameters into 2 groups xml parameters
+	# and url parameters
+	addr_params, xml_params = get_keys(keys_in_url, xml_params)
 	addr_params['account-name'] = settings.INVOICE_EXPRESS_ACCOUNT_NAME
 
 	# now compile urls using settings
 	url = action['url'].format(**addr_params)
 
+
+	url_params, xml_params = get_keys(keys_in_params,xml_params)
 	headers = {'Content-Type': 'application/xml'}
 	url_params['api_key'] = settings.INVOICE_EXPRESS_API_KEY
 
@@ -73,10 +124,11 @@ def ask_api(method, xml_params={}, url_params={}):
 		if not ('root_tag_name' in action) :
 			raise errors.WrongParams ('This call can not contain body parameters') 
 
-		# wrap xml_params in root_tag
+		# need to "tune" dict due to API 
+		xml_params = tune_dict(method, xml_params)
+ 		# wrap xml_params in root_tag
 		xml_params = { action['root_tag_name'] : xml_params }
-		# request_args['data'] = xmltodict.unparse(xml_params)
-		request_args['data'] = '<?xml version="1.0" encoding="utf-8"?><invoice_receipt><date>01/01/2014</date><due_date>01/02/2014</due_date><client><name>Ricardo Pereira</name><code>100</code></client><items type="array" ><item><name>Product 1</name><description>Cleaning product</description><unit_price>12.0</unit_price><quantity>2.0</quantity></item><item><name>Product 2</name><description>Beauty product</description><unit_price>123.0</unit_price><quantity>1.0</quantity><tax><name>IVA23</name></tax></item></items ></invoice_receipt>'
+		request_args['data'] = tune_xml(method, xmltodict.unparse(xml_params) )
 		
 	print url
 	print headers
@@ -99,13 +151,21 @@ def ask_api(method, xml_params={}, url_params={}):
 	if resp.status_code == 200 or resp.status_code==201:
 		try :
 			out  = xmltodict.parse(resp.text)
-		except:
+			if len( out.keys() ) > 1:
+				raise errors.ApiUnimplemented('Have more then 1 key')
+			out = out [ out.keys()[0] ]
+			out = tune_out(method, out)
+		except ExpatError:
 			out = resp.text
-		return out 
-	else :
-		raise errors.ApiCallError( str(resp.status_code)+': '+resp.text )
-	# else:
-	# 	raise api.ApiCallError( xmltodict.parse(resp.text) )
+		return out
+	else : 
+		error_message = str(resp.status_code)+': '+resp.text
+		
+		if resp.status_code == 404:
+			raise errors.Error404	
+		else :
+			error_message = str(resp.status_code)+': '+resp.text
+			raise errors.ApiCallError(error_message)
 
 
 

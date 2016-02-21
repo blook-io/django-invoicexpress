@@ -4,9 +4,12 @@
 class ApiCallError(Exception):
 	pass
 
-# error when feature 
-class ApiUndocumented(Exception):
+class ApiUninmplemented(Exception):
 	pass
 
 class WrongParams(Exception):
+	pass
+
+#need this class, as Not found are used during searching
+class Error404(Exception):
 	pass

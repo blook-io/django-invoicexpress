@@ -19,5 +19,9 @@ Running Tests
 1. export DJANGO_MODULE_SETTINGS='your.app.settings'
 2. python -m invoicexpress.test
 
+Docs
+------------------
+http://django-invoicexpress.readthedocs.org/en/latest/
+
 
 
