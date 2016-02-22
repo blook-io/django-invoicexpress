@@ -82,3 +82,88 @@ Example:
 		},
 		'items' : receipt['items']
 	})
+
+invoice-receipts.list
+*****************************
+Api docs: https://invoicexpress.com/api/invoice-receipt/list
+
+Example:
+
+.. code-block:: python
+
+	result = ask_api('invoice-receipts.list', {
+			'per_page': 7,
+			'page' : 1
+			})
+
+	print "Current page:" , result['current_page']
+
+	for r in result['invoice_receipt']:
+		print (
+			'Id: {} Client: {}'.format (r['id'],r['client']['name']) 
+		)
+
+
+invoice-receipts.change-state
+*********************************
+Api docs: https://invoicexpress.com/api/invoice-receipt/change-state
+
+**Note**: Bug in API docs, you must write `finalized` instead `settled` 
+
+Example:
+
+.. code-block:: python
+
+	# make finalize
+	result = ask_api('invoice-receipts.change-state', {
+			'invoice-receipt-id': receipt['id'],
+			'state': 'finalized',
+		})
+
+	print result
+
+
+invoice-receipts.email-document
+************************************
+Api docs: https://invoicexpress.com/api/invoice-receipt/email-document
+
+**Note**: Вody is Plain text 
+
+Example:
+
+.. code-block:: python
+
+
+	result = ask_api('invoice-receipts.email-document', {
+		'invoice-receipt-id': your_receipt['id'],
+
+		'client': {
+			'email': 'example@mail.pt',
+			'save': 0,
+		},
+
+		'subject' : 'The Html Letter',
+		'body' : 'Will be printed as <b> Plain </b> text'
+	})
+
+
+invoice-receipts.related_documents
+*****************************************
+Api docs: https://invoicexpress.com/api/invoice-receipt/related_documents
+
+Example:
+
+.. code-block:: python
+
+
+	result = ask_api('invoice-receipts.related_documents', {
+			'invoice-receipt-id' : a['id']
+	})
+
+
+TODO: add example of printing results
+
+
+
+
+

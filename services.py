@@ -1,12 +1,15 @@
 #-*- coding:utf-8 -*-
 import re
+from xml.parsers.expat import ExpatError
+import xml.sax.saxutils
 
 import requests
 import xmltodict
 
 from django.conf import settings
 from requests import Request, Session
-from xml.parsers.expat import ExpatError
+
+
 
 
 
@@ -60,6 +63,9 @@ def tune_dict(method, xml_params):
 		if 'items' in xml_params:
 			xml_params['items'] = { 'item': xml_params['items'] }
 
+	if method == 'invoice-receipts.email-document' :
+		if 'body' in xml_params:
+			xml_params['body'] = xml.sax.saxutils.escape( xml_params['body'] ) 
 	return xml_params
 
 def tune_xml(method, xml_string):
@@ -77,7 +83,10 @@ def tune_out(method, out_dict):
 		intead of:
 		  res['items']['item'][0]
 	"""
-	if method == 'invoice-receipts.get':
+	if not isinstance(out_dict, dict): 
+		return out_dict
+
+	if method == 'invoice-receipts.get' or 'invoice-receipts.related_document':
 		if 'items' in out_dict:
 			out_dict['items'] = out_dict['items']['item']
 
@@ -98,12 +107,8 @@ def ask_api(method, xml_params={}):
 	action = api.method[method]
 
 	# find all params in brackets
-	url_part  = action['url'].split('?')
-	keys_in_url = re.findall('\{(.[^\}]+)\}',url_part[0])
-	if len(url_part) > 1:
-		keys_in_params = re.findall('\{(.[^\}]+)\}',url_part[1])
-	else:
-		keys_in_params = {}
+	url  = action['url']
+	keys_in_url = re.findall('\{(.[^\}]+)\}',url)
 
 	# sort parameters into 2 groups xml parameters
 	# and url parameters
@@ -113,8 +118,11 @@ def ask_api(method, xml_params={}):
 	# now compile urls using settings
 	url = action['url'].format(**addr_params)
 
+	if 'url_params' in action:
+		url_params, xml_params = get_keys(action['url_params'],xml_params)
+	else:
+		url_params = {}
 
-	url_params, xml_params = get_keys(keys_in_params,xml_params)
 	headers = {'Content-Type': 'application/xml'}
 	url_params['api_key'] = settings.INVOICE_EXPRESS_API_KEY
 
@@ -168,5 +176,6 @@ def ask_api(method, xml_params={}):
 			raise errors.ApiCallError(error_message)
 
 
+# TODO: remove items special handling
 
 

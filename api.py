@@ -86,6 +86,7 @@ method = {
 		'url'		: 'https://{account-name}.app.invoicexpress.com/invoice_receipts.xml',
 		'method'	: 'GET',
 		'root_tag_name' : 'invoice_receipt',
+		'url_params' : {'page', 'per_page'}
 		},
 	'invoice-receipts.change-state' : {
 		'url'		: 'https://{account-name}.app.invoicexpress.com/invoice_receipts/{invoice-receipt-id}/change-state.xml',

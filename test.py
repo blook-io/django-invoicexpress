@@ -130,7 +130,55 @@ class InvoiceReceiptsApi(unittest.TestCase):
 	# 	print res
 
 	def test_pdf_email(self):
-		result = ask_api('invoice-receipts.list')
+		# list all and print 
+
+		result = ask_api('invoice-receipts.list', {
+			'per_page': 7,
+			'page' : 1
+			})
+
+		print "Current page:" , result['current_page']
+		for r in result['invoice_receipt']:
+			print (
+				'Id: {} Client: {}'.format (r['id'],r['client']['name']) 
+			)
+
+		
+		a,b = result['invoice_receipt'][0], result['invoice_receipt'][1]
+
+
+		# make finalize
+		with self.assertRaises(errors.ApiCallError):
+			result = ask_api('invoice-receipts.change-state', {
+				'invoice-receipt-id': a['id'],
+				'state': 'cancelled',
+			})
+
+		with self.assertRaises(errors.ApiCallError):
+			result = ask_api('invoice-receipts.email-document', {
+					'invoice-receipt-id': b['id'],
+
+					'client': {
+						'email': '???',
+						'save': 0,
+					},
+
+					'subject' : 'The Html Letter',
+					'body' : 'This <b>is Plain</b> text'
+				})
+
+		result = ask_api('invoice-receipts.related_documents', {
+			'invoice-receipt-id' : a['id']
+
+		})
+		print result
+
+		result = ask
+
+
+
+
+
 
 if __name__ == '__main__':
 
