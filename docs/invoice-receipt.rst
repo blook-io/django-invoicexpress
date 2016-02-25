@@ -146,6 +146,8 @@ Example:
 		'body' : 'Will be printed as <b> Plain </b> text'
 	})
 
+	# result is OK, so nothing to print 
+
 
 invoice-receipts.related_documents
 *****************************************
@@ -160,8 +162,32 @@ Example:
 			'invoice-receipt-id' : a['id']
 	})
 
+	print (
+		'Items: {}'.format (result['invoice']['items']) 
+	)
 
-TODO: add example of printing results
+invoice-receipts.pdf
+**************************
+Api docs: https://invoicexpress.com/api/invoice-receipt/documents-pdf
+
+Example:
+
+.. code-block:: python
+
+	# we have to wait for pdf generating
+	while True:
+		result = ask_api('invoice-receipts.pdf',{
+			'invoice-receipt-id': my_id,
+		})
+		if (result != 202) : break
+
+	print result['pdfUrl']
+
+
+
+
+
+
 
 
 

@@ -61,36 +61,14 @@ def tune_dict(method, xml_params):
 	# pdb.set_trace()
 	if method == 'invoice-receipts.create' or method == 'invoice-receipts.update':
 		if 'items' in xml_params:
-			xml_params['items'] = { 'item': xml_params['items'] }
+			xml_params['items']['@type'] = 'array'
 
 	if method == 'invoice-receipts.email-document' :
 		if 'body' in xml_params:
 			xml_params['body'] = xml.sax.saxutils.escape( xml_params['body'] ) 
 	return xml_params
 
-def tune_xml(method, xml_string):
-	"""
-		Changes xml string to conform Invocexpress API requisites
-	"""
-	if method == 'invoice-receipts.create' or method == 'invoice-receipts.update':
-		xml_string = xml_string.replace('<items>','<items type="array">')
-	return xml_string
 
-def tune_out(method, out_dict):
-	""" 
-		Simplifies dict: 
-		  res['items'][0]
-		intead of:
-		  res['items']['item'][0]
-	"""
-	if not isinstance(out_dict, dict): 
-		return out_dict
-
-	if method == 'invoice-receipts.get' or 'invoice-receipts.related_document':
-		if 'items' in out_dict:
-			out_dict['items'] = out_dict['items']['item']
-
-	return out_dict
 
 
 def ask_api(method, xml_params={}):
@@ -136,7 +114,7 @@ def ask_api(method, xml_params={}):
 		xml_params = tune_dict(method, xml_params)
  		# wrap xml_params in root_tag
 		xml_params = { action['root_tag_name'] : xml_params }
-		request_args['data'] = tune_xml(method, xmltodict.unparse(xml_params) )
+		request_args['data'] = xmltodict.unparse(xml_params) 
 		
 	print url
 	print headers
@@ -162,10 +140,11 @@ def ask_api(method, xml_params={}):
 			if len( out.keys() ) > 1:
 				raise errors.ApiUnimplemented('Have more then 1 key')
 			out = out [ out.keys()[0] ]
-			out = tune_out(method, out)
 		except ExpatError:
 			out = resp.text
 		return out
+	elif resp.status_code == 202:
+		return 202
 	else : 
 		error_message = str(resp.status_code)+': '+resp.text
 		

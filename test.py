@@ -53,81 +53,81 @@ class ClientsApi(unittest.TestCase):
 
 
 class InvoiceReceiptsApi(unittest.TestCase):
-	# def test_crud(self):
-	# 	# imitate error 422
-	# 	with self.assertRaises(errors.ApiCallError):
+	def test_crud(self):
+		# imitate error 422
+		with self.assertRaises(errors.ApiCallError):
 
-	# 		result = ask_api('invoice-receipts.create', { 
-	# 				'date': '01/01/2014',
-	# 				'due_date': '01/02/2014',
-	# 				'client' : {
-	# 					'name' : 'Ricardo Pereira',
-	# 					'code' : 100,
-	# 				},
-	# 				'items' : [
-	# 					{	
-	# 						'name' : 'Product 1',
-	# 						'description' : "Cleaning product",
-	# 						'unit_price': 12.0,
-	# 						'quantity' : 2.0,
-	# 					},
-	# 					{	
-	# 						'name' : 'Product 2',
-	# 						'description' : "Beauty product",
-	# 						'unit_price': 123.0,
-	# 						'quantity' : 'bla bla',
-	# 					},
-	# 				],
+			result = ask_api('invoice-receipts.create', { 
+					'date': '01/01/2014',
+					'due_date': '01/02/2014',
+					'client' : {
+						'name' : 'Ricardo Pereira',
+						'code' : 100,
+					},
+					'items' : { 'item' : [
+						{	
+							'name' : 'Product 1',
+							'description' : "Cleaning product",
+							'unit_price': 12.0,
+							'quantity' : 2.0,
+						},
+						{	
+							'name' : 'Product 2',
+							'description' : "Beauty product",
+							'unit_price': 123.0,
+							'quantity' : 'bla bla',
+						},
+					]},
 						
 					
-	# 		})
-	# 	# now get normall call
-	# 	result = ask_api('invoice-receipts.create', { 
-	# 		'date': '01/01/2014',
-	# 		'due_date': '01/02/2014',
-	# 		'client' : {
-	# 			'name' : 'Ricardo Pereira',
-	# 			'code' : 100,
-	# 		},
-	# 		'items' : [
-	# 			{	
-	# 				'name' : 'Product 1',
-	# 				'description' : "Cleaning product",
-	# 				'unit_price': 12.0,
-	# 				'quantity' : 2.0,
-	# 			},
-	# 			{	
-	# 				'name' : 'Product 2',
-	# 				'description' : "Beauty product",
-	# 				'unit_price': 123.0,
-	# 				'quantity' : 1.0,
-	# 			},
-	# 		],
+			})
+		# now get normall call
+		result = ask_api('invoice-receipts.create', { 
+			'date': '01/01/2014',
+			'due_date': '01/02/2014',
+			'client' : {
+				'name' : 'Ricardo Pereira',
+				'code' : 100,
+			},
+			'items' : { 'item' : [
+				{	
+					'name' : 'Product 1',
+					'description' : "Cleaning product",
+					'unit_price': 12.0,
+					'quantity' : 2.0,
+				},
+				{	
+					'name' : 'Product 2',
+					'description' : "Beauty product",
+					'unit_price': 123.0,
+					'quantity' : 1.0,
+				},
+			]},
 					
 				
-	# 	})
-	# 	print 'ID:', result['id'] 
-	# 	print 'Link:', result['permalink'] 
+		})
+		print 'ID:', result['id'] 
+		print 'Link:', result['permalink'] 
 		
-	# 	one_receipt = ask_api('invoice-receipts.get', {
-	# 		'invoice-receipt-id' : result['id'] 	
-	# 		})
+		one_receipt = ask_api('invoice-receipts.get', {
+			'invoice-receipt-id' : result['id'] 	
+			})
 
-	# 	self.assertEqual(one_receipt['permalink'], result['permalink'])
-	# 	print 'Getted: ', one_receipt['permalink']
+		self.assertEqual(one_receipt['permalink'], result['permalink'])
+		print 'Getted: ', one_receipt['permalink']
 
 
-	# 	res = ask_api('invoice-receipts.update', {
-	# 		'invoice-receipt-id': one_receipt['id'],
-	# 		'due_date': one_receipt['due_date'],
-	# 		'date': one_receipt['date'],
-	# 		'client' : {
-	# 			'name' : 'Ricardo Ferrera',
-	# 			'code' : '122'
-	# 		},
-	# 		'items' : one_receipt['items']
-	# 	})
-	# 	print res
+		res = ask_api('invoice-receipts.update', {
+			'invoice-receipt-id': one_receipt['id'],
+			'due_date': one_receipt['due_date'],
+			'date': one_receipt['date'],
+			'client' : {
+				'name' : 'Ricardo Ferrera',
+				'code' : '122'
+			},
+			'items' : one_receipt['items']
+		})
+		print res
 
 	def test_pdf_email(self):
 		# list all and print 
@@ -171,10 +171,25 @@ class InvoiceReceiptsApi(unittest.TestCase):
 			'invoice-receipt-id' : a['id']
 
 		})
-		print result
+		print (
+			'Items: {}'.format (result['invoice']['items']) 
+		)
 
-		result = ask
+class InvoiceReceiptsGeneratepdf(unittest.TestCase):
+	def test_generate_pdf(self):
+		result = ask_api('invoice-receipts.list', {
+			'per_page': 7,
+			'page' : 1
+			})
+		print result['invoice_receipt'][3]['id']
+		# print result
+		while True:
+			result = ask_api('invoice-receipts.pdf',{
+				'invoice-receipt-id': 8646893,
+			})
+			if (result != 202) : break
 
+		print result['pdfUrl']
 
 
 
@@ -182,6 +197,6 @@ class InvoiceReceiptsApi(unittest.TestCase):
 
 if __name__ == '__main__':
 
-	suite = unittest.TestLoader().loadTestsFromTestCase(InvoiceReceiptsApi)
+	suite = unittest.TestLoader().loadTestsFromTestCase(InvoiceReceiptsGeneratepdf)
 	unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main()
