@@ -94,9 +94,9 @@ qthelp:
 	@echo
 	@echo "Build finished; now you can run "qcollectiongenerator" with the" \
 	      ".qhcp project file in $(BUILDDIR)/qthelp, like this:"
-	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/django-invoicexpress.qhcp"
+	@echo "# qcollectiongenerator $(BUILDDIR)/qthelp/python-invoicexpress.qhcp"
 	@echo "To view the help file:"
-	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/django-invoicexpress.qhc"
+	@echo "# assistant -collectionFile $(BUILDDIR)/qthelp/python-invoicexpress.qhc"
 
 .PHONY: applehelp
 applehelp:
@@ -113,8 +113,8 @@ devhelp:
 	@echo
 	@echo "Build finished."
 	@echo "To view the help file:"
-	@echo "# mkdir -p $$HOME/.local/share/devhelp/django-invoicexpress"
-	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/django-invoicexpress"
+	@echo "# mkdir -p $$HOME/.local/share/devhelp/python-invoicexpress"
+	@echo "# ln -s $(BUILDDIR)/devhelp $$HOME/.local/share/devhelp/python-invoicexpress"
 	@echo "# devhelp"
 
 .PHONY: epub

@@ -6,14 +6,13 @@ import xml.sax.saxutils
 import requests
 import xmltodict
 
-from django.conf import settings
 from requests import Request, Session
 
 
 
 
 
-from . import api, errors
+from . import api, errors, settings
 
 ### CONFIG ###
 
@@ -36,7 +35,7 @@ from . import api, errors
 # print requests.post('http://httpbin.org/post', data=xml, headers=headers).text
 
 context = {
-	'account_name': settings.INVOICE_EXPRESS_ACCOUNT_NAME,
+	'account_name': settings.ACCOUNT_NAME,
 }
 
 def get_keys(keys_list, obj):
@@ -91,7 +90,7 @@ def ask_api(method, xml_params={}):
 	# sort parameters into 2 groups xml parameters
 	# and url parameters
 	addr_params, xml_params = get_keys(keys_in_url, xml_params)
-	addr_params['account-name'] = settings.INVOICE_EXPRESS_ACCOUNT_NAME
+	addr_params['account-name'] = settings.ACCOUNT_NAME
 
 	# now compile urls using settings
 	url = action['url'].format(**addr_params)
@@ -102,7 +101,7 @@ def ask_api(method, xml_params={}):
 		url_params = {}
 
 	headers = {'Content-Type': 'application/xml'}
-	url_params['api_key'] = settings.INVOICE_EXPRESS_API_KEY
+	url_params['api_key'] = settings.API_KEY
 
 	request_args = {}
 	if xml_params != {} :

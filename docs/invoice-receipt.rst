@@ -8,7 +8,6 @@ invoice-receipts.create
 
 Api docs: https://invoicexpress.com/api/invoice-receipt
 
-Specify `items` as simple list. 
 
 Example:
 
@@ -21,7 +20,7 @@ Example:
 			'name' : 'Ricardo Pereira',
 			'code' : 100,
 		},
-		'items' : [
+		'items' : { 'item' : [
 			{	
 				'name' : 'Product 1',
 				'description' : "Cleaning product",
@@ -34,7 +33,7 @@ Example:
 				'unit_price': 123.0,
 				'quantity' : 1.0,
 			},
-		],
+		]},
 				
 			
 	})
