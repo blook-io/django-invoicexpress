@@ -125,7 +125,7 @@ Example:
 
 invoice-receipts.email-document
 ************************************
-Api docs: https://invoicexpress.com/api/invoice-receipt/email-document
+Api docs: https://invoicexpress.com/api/invoice-receipt/email
 
 **Note**: Вody is Plain text 
 
@@ -149,7 +149,7 @@ Example:
 
 invoice-receipts.related_documents
 *****************************************
-Api docs: https://invoicexpress.com/api/invoice-receipt/related_documents
+Api docs: https://invoicexpress.com/api/invoice-receipt/related-documents
 
 Example:
 
