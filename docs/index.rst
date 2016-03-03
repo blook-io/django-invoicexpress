@@ -13,6 +13,7 @@ Contents:
 
 	installation
 	invoice-receipt
+	invoices
 
 
 

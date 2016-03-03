@@ -107,4 +107,32 @@ method = {
 		'method'	: 'GET',
 		},
 
+	# invoices
+	'invoices.create' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/invoices.xml',
+		'method'	: 'POST',
+		'root_tag_name' : 'invoice',
+	},
+	'invoices.get' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/invoices/{invoice-id}.xml',
+		'method'	: 'GET',
+	},
+	'invoices.update' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/invoices/{invoice-id}.xml',
+		'method'	: 'PUT',
+		'root_tag_name' : 'invoice',
+	},
+	'invoices.list' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/invoices.xml',
+		'method'	: 'GET',
+		'root_tag_name' : 'invoice',
+		'url_params' : {'non_archived'}
+	},
+	'invoices.change-state' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/invoice/{invoice-id}/change-state.xml',
+		'method'	: 'PUT',
+		'root_tag_name' : 'invoice',
+	},
+
+
 }

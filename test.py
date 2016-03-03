@@ -205,7 +205,104 @@ class InvoiceReceiptsGeneratepdf(unittest.TestCase):
   #           ]}, 
   #       })
 
+create_array_good = {
+	'date': '01/01/2014',
+	'due_date': '01/02/2014',
+	'client' : {
+		'name' : 'Ricardo Pereira',
+		'code' : 100,
+	},
+	'items' : { 'item' : [
+		{	
+			'name' : 'Product 1',
+			'description' : "Cleaning product",
+			'unit_price': 12.0,
+			'quantity' : 2.0,
+		},
+		{	
+			'name' : 'Product 2',
+			'description' : "Beauty product",
+			'unit_price': 123.0,
+			'quantity' : 5,
+		},
+	]}
+}
 
+create_array_bad = {
+	'date': '01/01/2014',
+	'due_date': '01/02/2014',
+	'client' : {
+		'name' : 'Ricardo Pereira',
+		'code' : 100,
+	},
+	'items' : { 'item' : [
+		{	
+			'name' : 'Product 1',
+			'description' : "Cleaning product",
+			'unit_price': 12.0,
+			'quantity' : 2.0,
+		},
+		{	
+			'name' : 'Product 2',
+			'description' : "Beauty product",
+			'unit_price': 123.0,
+			'quantity' : 'bla bla',
+		},
+	]},
+}
+
+class Invoices(unittest.TestCase):
+	def test_create_get(self):
+
+		with self.assertRaises(errors.ApiCallError) :
+			result = ask_api('invoices.create', create_array_bad);
+
+		result = ask_api('invoices.create', create_array_good)
+
+		print result['permalink']
+
+		self.assertTrue ('permalink' in result);
+
+		result = ask_api('invoices.get', {
+			'invoice-id': result['id'],
+			})
+		self.assertTrue ('permalink' in result)
+
+		print result['permalink']
+
+		res = ask_api('invoices.update', {
+			'invoice-id': result['id'],
+			'due_date': result['due_date'],
+			'date': result['date'],
+			'client' : {
+				'name' : 'Ricardo Ferrera',
+				'code' : '122'
+			},
+			'items' : result['items']
+		})
+		print res
+
+class InvoicesList(unittest.TestCase):
+
+	def test_list(self):
+		res = ask_api('invoices.list',{
+			'status[]': [ 'settled', 'draft' ],
+			'type[]' : [ 'Invoice', ], 
+			'non_archived':True}
+		)
+
+		if 'invoice' in res:
+			for inv in res['invoice'] :
+				print ("{type} : {status} : {permalink}"
+					.format ( **inv))
+		else : print (res)
+
+
+		with self.assertRaises(errors.Error404):
+			result = ask_api('invoices.change-state', {
+				'invoice-id': 0000000,
+				'state': 'cancelled',
+			})
 
 
 if __name__ == '__main__':

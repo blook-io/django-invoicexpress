@@ -58,9 +58,10 @@ def tune_dict(method, xml_params):
 	"""
 	# import pdb
 	# pdb.set_trace()
-	if method == 'invoice-receipts.create' or method == 'invoice-receipts.update':
-		if 'items' in xml_params:
-			xml_params['items']['@type'] = 'array'
+	if 'items' in xml_params:
+		if 'item' in xml_params['item']:
+			if type(xml_params['items']['item']) == type([]) :
+				xml_params['items']['@type'] = 'array'
 
 	if method == 'invoice-receipts.email-document' :
 		if 'body' in xml_params:
@@ -87,6 +88,7 @@ def ask_api(method, xml_params={}):
 	url  = action['url']
 	keys_in_url = re.findall('\{(.[^\}]+)\}',url)
 
+			
 	# sort parameters into 2 groups xml parameters
 	# and url parameters
 	addr_params, xml_params = get_keys(keys_in_url, xml_params)
@@ -94,6 +96,15 @@ def ask_api(method, xml_params={}):
 
 	# now compile urls using settings
 	url = action['url'].format(**addr_params)
+	
+	out = []
+	for key in xml_params.keys():
+		if key[-2:]=='[]':
+			out  += [ key+"="+x for x in xml_params.pop(key) ]
+
+	if len(out) > 0 :
+		url = url+'?'+'&'.join(out)
+		
 
 	if 'url_params' in action:
 		url_params, xml_params = get_keys(action['url_params'],xml_params)
