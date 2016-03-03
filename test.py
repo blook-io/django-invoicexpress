@@ -1,3 +1,4 @@
+# -*-  coding:utf-8 -*- 
 import unittest
 
 
@@ -13,10 +14,10 @@ class ClientsApi(unittest.TestCase):
 				'name': 'Pedro', 
 				'code': uuid.uuid4(),
 		})
-		self.assertTrue( 'client' in result )
-		self.assertEqual( 'Pedro', result['client']['name'] )
+		self.assertTrue( 'name' in result )
+		self.assertEqual( 'Pedro', result['name'] )
 
-		new_user_id = result['client']['id']
+		new_user_id = result['id']
 		print new_user_id
 
 		# Listing all users
@@ -24,7 +25,7 @@ class ClientsApi(unittest.TestCase):
 			'per_page': 50,
 			})
 		print result
-		self.assertTrue( 'clients' in result)
+		self.assertTrue( 'client' in result)
 
 		# search for new user
 		# find_it = False
@@ -38,10 +39,8 @@ class ClientsApi(unittest.TestCase):
 		# updating user
 		result = ask_api('clients.update',{
 					'name' : "Adam",
+					'client-id' : new_user_id,
 			},
-			url_params={
-				'client-id' : new_user_id,
-			}
 		)
 
 		print "Update result: ", result
@@ -171,9 +170,7 @@ class InvoiceReceiptsApi(unittest.TestCase):
 			'invoice-receipt-id' : a['id']
 
 		})
-		print (
-			'Items: {}'.format (result['invoice']['items']) 
-		)
+		print result
 
 class InvoiceReceiptsGeneratepdf(unittest.TestCase):
 	def test_generate_pdf(self):
@@ -185,11 +182,28 @@ class InvoiceReceiptsGeneratepdf(unittest.TestCase):
 		# print result
 		while True:
 			result = ask_api('invoice-receipts.pdf',{
-				'invoice-receipt-id': 8646893,
+				'invoice-receipt-id': result['invoice_receipt'][3]['id'],
 			})
 			if (result != 202) : break
 
 		print result['pdfUrl']
+
+		# res = ask_api('invoice-receipts.create',{
+  #           'date': '25/02/2016', 
+  #           'due_date': '25/02/2016', 
+  #           'client' : {
+  #               'name' : 'bla-bal',
+  #               'code' : 2333,
+  #           },
+  #           'items': { 'item' : [
+  #           	{
+  #           		'quantity': 1,
+  #           		'description': u"Revista do Instituto do Direito Brasileiro, Vol. 3 (2014), No. 4, 2449-2521",
+  #           		'unit_price': 4.00,
+  #           		'name': u"Как дела",
+  #           	},
+  #           ]}, 
+  #       })
 
 
 

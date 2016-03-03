@@ -100,7 +100,7 @@ def ask_api(method, xml_params={}):
 	else:
 		url_params = {}
 
-	headers = {'Content-Type': 'application/xml'}
+	headers = {'Content-Type': 'application/xml; charset=utf-8'}
 	url_params['api_key'] = settings.API_KEY
 
 	request_args = {}
@@ -113,7 +113,7 @@ def ask_api(method, xml_params={}):
 		xml_params = tune_dict(method, xml_params)
  		# wrap xml_params in root_tag
 		xml_params = { action['root_tag_name'] : xml_params }
-		request_args['data'] = xmltodict.unparse(xml_params) 
+		request_args['data'] = xmltodict.unparse(xml_params).encode('utf8')
 		
 	print url
 	print headers
