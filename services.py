@@ -59,7 +59,7 @@ def tune_dict(method, xml_params):
 	# import pdb
 	# pdb.set_trace()
 	if 'items' in xml_params:
-		if 'item' in xml_params['item']:
+		if 'item' in xml_params['items']:
 			if type(xml_params['items']['item']) == type([]) :
 				xml_params['items']['@type'] = 'array'
 
