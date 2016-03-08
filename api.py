@@ -45,10 +45,12 @@ method = {
 	'clients.find-by-name' : {
 		'url'		: 'https://{account-name}.app.invoicexpress.com/clients/find-by-name.xml',
 		'method'	: 'GET',
+		'url_params' : {'client_name'},
 		},
 	'clients.find-by-code' : {
 		'url'		: 'https://{account-name}.app.invoicexpress.com/clients/find-by-code.xml',
 		'method'	: 'GET',
+		'url_params' : {'client_code'},
 		},
 	'clients.create-invoice' : {
 		'url'		: 'https://{account-name}.app.invoicexpress.com/clients/{client-id}/create/invoice.xml',

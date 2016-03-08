@@ -304,6 +304,12 @@ class InvoicesList(unittest.TestCase):
 				'state': 'cancelled',
 			})
 
+from  . import helpers
+class InvoiceReceiptsHelper(unittest.TestCase):
+	def test_helper(self):
+		inv_list  = helpers.InvoiceReceipts(10)
+		print inv_list[:10]
+		print inv_list[10:20]
 
 if __name__ == '__main__':
 
