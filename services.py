@@ -7,6 +7,9 @@ import requests
 import xmltodict
 
 from requests import Request, Session
+import logging 
+
+log = logging.getLogger(__name__) 
 
 
 
@@ -159,9 +162,8 @@ def ask_api(method, xml_params={}):
 		error_message = str(resp.status_code)+': '+resp.text
 		
 		if resp.status_code == 404:
-			raise errors.Error404	
+			raise errors.Error404(error_message)	
 		else :
-			error_message = str(resp.status_code)+': '+resp.text
 			raise errors.ApiCallError(error_message)
 
 
