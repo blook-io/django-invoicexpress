@@ -121,7 +121,7 @@ def ask_api(method, xml_params={}):
 	if xml_params != {} :
 
 		if not ('root_tag_name' in action) :
-			raise errors.WrongParams ('This call can not contain body parameters') 
+			raise errors.WrongParams ('This call must have root_tag_name') 
 
 		# need to "tune" dict due to API 
 		xml_params = tune_dict(method, xml_params)

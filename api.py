@@ -136,5 +136,37 @@ method = {
 		'root_tag_name' : 'invoice',
 	},
 
+	# Taxes (currently add Get and Create)
+	'taxes.get' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/taxes/{tax-id}.xml',
+		'method'	: 'GET',
+		'root_tag_name' : 'tax',
+	},
+	'taxes.create' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/taxes.xml',
+		'method'	: 'POST',
+		'root_tag_name' : 'tax',
+	},
+	'taxes.update' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/taxes/{tax-id}.xml',
+		'method'	: 'PUT',
+		'root_tag_name' : 'tax',
+	},
+	'taxes.delete' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/taxes/{tax-id}.xml',
+		'method'	: 'DELETE',
+	},
+	'taxes.list' : {
+		'url'		: 'https://{account-name}.app.invoicexpress.com/taxes.xml',
+		'method'	: 'GET',
+		'root_tag_name' : 'taxes',
+	},
+
+
+
+
+
+
+
 
 }
